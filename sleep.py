@@ -30,5 +30,25 @@ sleep_transformed['Quality of Sleep (scale: 1-10)'] = sleep_transformed['Quality
 sleep_transformed['Stress Level (scale: 1-10)'] = sleep_transformed['Stress Level (scale: 1-10)'].cat.set_categories(new_categories = [1,2,3,4,5,6,7,8,9,10], ordered = True)
 sleep_transformed['BMI Category'] = sleep_transformed['BMI Category'].cat.set_categories(new_categories = ['Underweight', 'Normal', 'Overweight', 'Obese'], ordered = True)
 
+#Dropping blood pressure
+sleep_transformed = sleep_transformed.drop(columns=['Blood Pressure (systolic/diastolic)'])
+
+#Checking data types
 print(sleep.info())
 print(sleep_transformed.info())
+
+#---------------------------------------
+
+# Plotting the data
+
+fig, axes = plt.subplots(1,2)
+
+sns.set(style="ticks", rc={"lines.linewidth": 0.7})
+sns.pointplot(x = 'Quality of Sleep (scale: 1-10)', y = 'Sleep Duration (hours)', data = sleep_transformed, hue = 'BMI Category', ci = 'sd', dodge = True, capsize = 0.1, ax= axes[0])
+
+numerical_columns = sleep_transformed.select_dtypes(include=['number'])
+sns.heatmap(numerical_columns.corr(), annot = True, fmt = ".2f", cmap = 'coolwarm', ax= axes[1])
+
+sns.set(font_scale = 0.20)
+plt.tight_layout()
+plt.show()
