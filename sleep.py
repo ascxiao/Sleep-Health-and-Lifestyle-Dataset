@@ -41,14 +41,25 @@ print(sleep_transformed.info())
 
 # Plotting the data
 
-fig, axes = plt.subplots(1,2)
+fig, axes = plt.subplots(2,2, figsize = (18,8))
+sns.set_theme(font_scale = 0.50)
 
-sns.set(style="ticks", rc={"lines.linewidth": 0.7})
-sns.pointplot(x = 'Quality of Sleep (scale: 1-10)', y = 'Sleep Duration (hours)', data = sleep_transformed, hue = 'BMI Category', ci = 'sd', dodge = True, capsize = 0.1, ax= axes[0])
+
+sns.set_theme(style="ticks", rc={"lines.linewidth": 0.7})
+ax1 = sns.pointplot(x = 'Quality of Sleep (scale: 1-10)', y = 'Sleep Duration (hours)', data = sleep_transformed, hue = 'BMI Category', ci = 'sd', dodge = True, capsize = 0.1, ax= axes[0, 0])
+ax1.set_title('Quality of Sleep vs Sleep Duration')
 
 numerical_columns = sleep_transformed.select_dtypes(include=['number'])
-sns.heatmap(numerical_columns.corr(), annot = True, fmt = ".2f", cmap = 'coolwarm', ax= axes[1])
+ax2 = sns.heatmap(numerical_columns.corr(), annot = True, fmt = ".2f", cmap = 'coolwarm', ax= axes[0,1])
+ax2.set_xticklabels(ax2.get_xticklabels(), rotation=45)
+ax2.set_title('Correlation Matrix')
 
-sns.set(font_scale = 0.20)
+ax3 = sns.scatterplot(x = 'Sleep Duration (hours)', y = 'Stress Level (scale: 1-10)', data = sleep_transformed, hue = 'BMI Category', ax= axes[1, 0])
+ax3.set_title('Sleep Duration vs Stress Level')
+
+ax4 = sns.barplot(x = 'BMI Category', y = 'Physical Activity Level (minutes/day)', data = sleep_transformed, ax= axes[1, 1])
+ax4.set_title('BMI Category vs Physical Activity Level')
+
+fig.suptitle('Sleep Study Data', fontsize = 20)
 plt.tight_layout()
 plt.show()
