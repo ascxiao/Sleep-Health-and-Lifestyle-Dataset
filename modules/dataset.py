@@ -22,6 +22,7 @@ sleep_transformed['BMI Category'] = sleep_transformed['BMI Category'].astype('ca
 sleep_transformed['Heart Rate (bpm)'] = sleep_transformed['Heart Rate (bpm)'].astype('int16')
 sleep_transformed['Daily Steps'] = sleep_transformed['Daily Steps'].astype('int16')
 sleep_transformed['Sleep Disorder'] = sleep_transformed['Sleep Disorder'].astype('category')
+sleep_transformed['Age Group'] = pd.cut(sleep_transformed['Age'], bins=[18,25,35,45,55,65,80], labels = ['18-25', '26-35', '36-45','46-55', '56-65', '66+'])
 
 # Reorder the categories
 sleep_transformed['BMI Category'] = sleep_transformed['BMI Category'].cat.set_categories(new_categories = ['Underweight', 'Normal', 'Overweight', 'Obese'], ordered = True)

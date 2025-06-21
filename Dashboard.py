@@ -4,7 +4,7 @@ import pandas as pd
 import datetime
 import plotly.express as px
 import plotly.graph_objects as go
-from modules import dataset
+from modules import dataset, processing as prc, donut_chart as dc
 import numpy as np
 
 st.set_page_config(layout='wide')
@@ -40,72 +40,39 @@ with col3:
     
 with col2:
     if donut == 'Gender':
-        labels = ['Male', 'Female']
-        values = [data.percent_gender, 100 - data.percent_disorders]
-
-        fig = go.Figure(data=[go.Pie(
-        labels=labels,
-        values=values,
-        hole=0.5,  # 0.0 = pie, 0.5 = donut
-        marker=dict(colors=["#F53621", "#A64338"])
-        )])
-
-        fig.update_layout(
-            title_text="Distribution of Participants' Gender",
-            showlegend=True
-        )
-        st.plotly_chart(fig, use_container_width=True)  
+        dc.gender()
 
     if donut == 'Occupation':
-        labels = [data.percent_occupation.index.tolist()[0], data.percent_occupation.index.tolist()[1], data.percent_occupation.index.tolist()[2], data.percent_occupation.index.tolist()[3]]
-        values = [data.percent_occupation.values.tolist()[0],data.percent_occupation.values.tolist()[1], data.percent_occupation.values.tolist()[2], data.percent_occupation.values.tolist()[3]]
-
-        fig = go.Figure(data=[go.Pie(
-        labels=labels,
-        values=values,
-        hole=0.5,  # 0.0 = pie, 0.5 = donut
-        marker=dict(colors=["#E6A7A7", "#CC4A3E", "#DA4C7E", "#C623A5"])
-        )])
-
-        fig.update_layout(
-            title_text="Distribution of Participants' Occupation",
-            showlegend=True
-        )
-        st.plotly_chart(fig, use_container_width=True)  
+        dc.occupation()
 
     if donut == 'BMI Category':
-        labels = [data.percent_bmi.index.tolist()[0], data.percent_bmi.index.tolist()[1], data.percent_bmi.index.tolist()[2], data.percent_bmi.index.tolist()[3]]
-        values = [data.percent_bmi.values.tolist()[0],data.percent_bmi.values.tolist()[1], data.percent_bmi.values.tolist()[2], data.percent_bmi.values.tolist()[3]]
-
-        fig = go.Figure(data=[go.Pie(
-        labels=labels,
-        values=values,
-        hole=0.5,  # 0.0 = pie, 0.5 = donut
-        marker=dict(colors=["#E1A7E6", "#B43ECC", "#984CDA", "#4123C6"])
-        )])
-
-        fig.update_layout(
-            title_text="Distribution of Participants' BMI Category",
-            showlegend=True
-        )
-        st.plotly_chart(fig, use_container_width=True)  
-
+        dc.bmi()
 
     if donut == 'Sleep Disorder':
-        labels = ['With Sleep Disorder', 'Without Sleep Disorder']
-        values = [data.percent_disorders, (100 - data.percent_disorders)]
-
-        fig = go.Figure(data=[go.Pie(
-        labels=labels,
-        values=values,
-        hole=0.5,  # 0.0 = pie, 0.5 = donut
-        marker=dict(colors=["#E68014", "#F9BDAD"])
-        )])
-
-        fig.update_layout(
-            title_text='Distribution of Sleep Disorder Cases',
-            showlegend=True
-        )
-        st.plotly_chart(fig, use_container_width=True)
+        dc.sleep_disorder()
 st.divider()
-      
+
+col4, col5 = st.columns([0.4, 0.6])
+
+with col4:
+    avg_sleep = df.groupby('Gender')['Quality of Sleep (scale: 1-10)'].mean().reset_index()
+    fig = px.bar(avg_sleep, x = 'Gender', y ='Quality of Sleep (scale: 1-10)',
+                 title = "Sleep Quality by Gender", hover_data = ['Quality of Sleep (scale: 1-10)'],
+                template = 'gridon', height = 500, color = 'Gender')
+    st.plotly_chart(fig, use_container_width=True)
+
+with col5:
+    fig = px.box(df, x='Age Group', y = 'Sleep Duration (hours)',
+                 title = 'Sleep Duration by Age Group', hover_data=['Sleep Duration (hours)'],
+                 template = 'gridon', height = 500, color = 'Age Group')
+    st.plotly_chart(fig, use_container_width=True)
+
+st.divider()
+
+col6, col7= st.columns([0.5, 0.5])        
+
+with col6:
+    importance = prc.importances
+    fig = px.bar(importance, x = importance.values, y = importance.index, orientation='h',
+                 title = 'Depictors of Sleep Quality', template='gridon', height=500)
+    st.plotly_chart(fig, use_container_width=True)
