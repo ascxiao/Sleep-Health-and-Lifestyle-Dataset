@@ -24,6 +24,25 @@ sleep_transformed['Daily Steps'] = sleep_transformed['Daily Steps'].astype('int1
 sleep_transformed['Sleep Disorder'] = sleep_transformed['Sleep Disorder'].astype('category')
 sleep_transformed['Age Group'] = pd.cut(sleep_transformed['Age'], bins=[18,25,35,45,55,65,80], labels = ['18-25', '26-35', '36-45','46-55', '56-65', '66+'])
 
+sleep_transformed[['Systolic', 'Diastolic']] = sleep_transformed['Blood Pressure (systolic/diastolic)'].str.split('/', expand=True).astype(int)
+
+def categorize_bp(row):
+    sys = row['Systolic']
+    dia = row['Diastolic']
+    
+    if sys >= 180 or dia >= 120:
+        return 'Hypertensive Crisis'
+    elif sys >= 140 or dia >= 90:
+        return 'High Stage 2'
+    elif sys >= 130 or dia >= 80:
+        return 'High Stage 1'
+    elif sys >= 120 and dia < 80:
+        return 'Elevated'
+    else:
+        return 'Normal'
+
+sleep_transformed['BP Category'] = sleep_transformed.apply(categorize_bp, axis=1).astype('category')
+sleep_transformed['BP Category'] = sleep_transformed['BP Category'].cat.set_categories(new_categories = ['Normal', 'Elevated', 'High Stage 1', 'High Stage 2'], ordered = True)
 # Reorder the categories
 sleep_transformed['BMI Category'] = sleep_transformed['BMI Category'].cat.set_categories(new_categories = ['Underweight', 'Normal', 'Overweight', 'Obese'], ordered = True)
 

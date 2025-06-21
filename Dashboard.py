@@ -1,19 +1,14 @@
 import streamlit as st
-from pages import About
 import pandas as pd
-import datetime
 import plotly.express as px
 import plotly.graph_objects as go
-from modules import dataset, processing as prc, donut_chart as dc
-import numpy as np
+from modules import dataset, plots, processing as prc, donut_chart as dc
 
 st.set_page_config(layout='wide')
 
-sidebar = st.sidebar
+from modules import sidebar
 
-with sidebar:
-    box_date = str(datetime.datetime.now().strftime("%d %B %Y"))
-    st.write(f"Last updated by: \n {box_date}")
+sidebar.render()
 
 df=dataset.sleep_transformed
 data = dataset
@@ -42,13 +37,13 @@ with col2:
     if donut == 'Gender':
         dc.gender()
 
-    if donut == 'Occupation':
+    elif donut == 'Occupation':
         dc.occupation()
 
-    if donut == 'BMI Category':
+    elif donut == 'BMI Category':
         dc.bmi()
 
-    if donut == 'Sleep Disorder':
+    elif donut == 'Sleep Disorder':
         dc.sleep_disorder()
 st.divider()
 
@@ -72,7 +67,7 @@ st.divider()
 col6, col7= st.columns([0.8, 0.2], border=True)
 
 with col6:
-    values = st.slider('No. of Previews', 0, 20, 5)
+    values = st.slider('No. of Previews', 5, 20, 5)
     global importance
     importance = prc.importance(values)
 
@@ -92,3 +87,46 @@ with col7:
     st.write(f"5. {importance.index[4]}")
 st.divider()
 
+col8, col9 = st.columns([0.2, 0.8], border=True)
+
+with col8:
+    y_var = st.radio('Choose Y-axis',
+                     ['Age',
+                     'Daily Steps',
+                     'Physical Activity Level (minutes/day)',
+                     'Stress Level (scale: 1-10)'])
+    
+    x_var = st.radio('Choose X-axis',
+                     ['Quality of Sleep (scale: 1-10)',
+                      'Sleep Duration (hours)',
+                      'Heart Rate (bpm)'])
+    
+    reg_toggle = st.toggle("Regression line")
+
+with col9:
+    plots.regplot(x_var, y_var, reg_toggle)
+
+col10, col11 = st.columns([0.8,0.2], border=True)
+
+with col11:
+    count = st.radio('Choose variable',
+                    ['Age Group',
+                    'Gender',
+                    'Occupation',
+                    'BMI Category',
+                    'BP Category'])
+
+with col10:
+    plots.barplot(count)
+
+st.divider()
+
+fig = px.imshow(
+    prc.corr_matrix,
+    text_auto=True,
+    color_continuous_scale='RdBu',
+    title='Correlation Heatmap of Numeric Features',
+    zmin=-1,zmax=1
+)
+fig.update_layout(width = 1000, height = 1000)
+st.plotly_chart(fig, use_container_width=True)

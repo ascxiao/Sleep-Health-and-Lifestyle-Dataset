@@ -7,6 +7,8 @@ df = dataset.sleep_transformed
 
 sleep_encoded = pd.get_dummies(df, drop_first=True)
 
+corr_matrix = df.select_dtypes(include='number').corr()
+
 # Prepare data
 X = sleep_encoded.drop(columns=['Quality of Sleep (scale: 1-10)'])
 y = sleep_encoded['Quality of Sleep (scale: 1-10)']

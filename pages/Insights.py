@@ -8,6 +8,7 @@ st.set_page_config(layout='wide')
 st.markdown('<style>div.block-container</style>', unsafe_allow_html=True)
 
 sidebar.render()
+
 image = Image.open('Sleep_picture.jpg')
 def go_dashboard():
     st.session_state.page = "Dashboard"
