@@ -14,9 +14,12 @@ y = sleep_encoded['Quality of Sleep (scale: 1-10)']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Train model
-model = RandomForestRegressor()
+model = RandomForestRegressor(random_state=42)
 model.fit(X_train, y_train)
 
 # Get feature importance
-importances = pd.Series(model.feature_importances_, index=X.columns)
-importances = importances.sort_values(ascending=False).head(5)
+
+def importance(x):
+    importances = pd.Series(model.feature_importances_, index=X.columns)
+    importances = importances.sort_values(ascending=False).head(x)
+    return importances

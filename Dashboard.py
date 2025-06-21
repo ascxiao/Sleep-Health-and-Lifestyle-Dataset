@@ -69,10 +69,26 @@ with col5:
 
 st.divider()
 
-col6, col7= st.columns([0.5, 0.5])        
+col6, col7= st.columns([0.8, 0.2], border=True)
 
 with col6:
-    importance = prc.importances
+    values = st.slider('No. of Previews', 0, 20, 5)
+    global importance
+    importance = prc.importance(values)
+
     fig = px.bar(importance, x = importance.values, y = importance.index, orientation='h',
                  title = 'Depictors of Sleep Quality', template='gridon', height=500)
+    fig.update_layout(yaxis=dict(autorange='reversed'))
     st.plotly_chart(fig, use_container_width=True)
+
+with col7:
+    st.markdown('<center><h4>Top 5 Indicators of Sleep Quality</h4><center>', unsafe_allow_html=True)
+    st.divider()
+
+    st.write(f"1. {importance.index[0]}")
+    st.write(f"2. {importance.index[1]}")
+    st.write(f"3. {importance.index[2]}")
+    st.write(f"4. {importance.index[3]}")
+    st.write(f"5. {importance.index[4]}")
+st.divider()
+
