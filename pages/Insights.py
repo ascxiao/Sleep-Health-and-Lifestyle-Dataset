@@ -13,38 +13,22 @@ image = Image.open('Sleep_picture.jpg')
 def go_dashboard():
     st.session_state.page = "Dashboard"
 
-st.markdown('<center><h1>Sleep Health and Lifestyle</h2></center>', unsafe_allow_html=True)
+st.markdown('<center><h1>Insights</h2></center>', unsafe_allow_html=True)
 
-col1, col2 = st.columns([0.5, 0.5], gap = 'large')
+summary = pd.DataFrame({
+    "Analytical Question": ['Which factors are most associated with low sleep quality?',
+                             'How do sleep disorders vary by age, gender, and occupation?',
+                             'Is there a link between physical activity, stress levels, and sleep duration?',
+                             'Do individuals with better cardiovascular indicators (e.g. lower heart rate, normal blood pressure) sleep better?',
+                             'What lifestyle patterns distinguish individuals without sleep disorders from those with insomnia or apnea?'],
+    "Insights" : ['Top factors associated with sleep quality include Daily Steps, Physical Activity Level, and Age, contributing up to 25–27% in the Random Forest model. While no factor shows a strong individual correlation, these three stand out in relative importance based on the regression analysis',
+                   'Sleep disorders vary across demographics. Insomnia is more common in males, while females are more affected by Sleep Apnea. The 36–45 age group shows the highest occurrence of both disorders, while no cases of Sleep Apnea were found in participants over 66. Office workers are most affected by both conditions, followed by students with Insomnia. Overall, Insomnia is more prevalent across all groups. This suggests that individuals engaged in work or academics—particularly males in their 30s–40s—may be more prone to sleep disorders due to environmental stress',
+                    'No significant relationships were found between Physical Activity Level, Stress Level, and Sleep Duration. Correlation values were all near zero (e.g., -0.002, 0.054), and regression plots showed flat trends, indicating minimal or no linear association between these factors.',
+                      'No significant relationship was found between cardiovascular factors and sleep duration. Sleep duration is evenly distributed across blood pressure categories, with hypothesis testing (p = 0.233) supporting this. However, participants with low heart rates appear less prone to sleep disorders, while most with disorders have normal heart rates.',
+                      'Sleep Apnea is linked to a higher median stress level, while Insomnia is more common among those with higher physical activity. Both disorders show similar distributions in daily steps and overall spread. However, Mann-Whitney tests indicate no significant difference between the two disorders across these factors.']
+}).reset_index(drop=True)
 
-with col1:
-    st.image(image, use_container_width=True)
-with col2:
-    st.markdown('<left><h2>The Problem</h2></left>', unsafe_allow_html=True)
-    st.markdown("<p>Living in today's fast-paced world, sleep has become an overlooked components of our health. \
-                Poor sleep habits, rising stress levels, and sedantary routines and increasinly linked to various \
-                chronic health problems, however the roots of these sleep habits and disorders remained complex and \
-                multidimensional. With this, organization and healthcare providers may need data-driven insights to \
-                understand different aspects that contribute to poor sleep, how it differentiates between different \
-                demographics, and what interventions are possible that might improve health outcomes.\
-                <i><b>How can we identify and address the key factors influencing poor sleep quality and \
-                sleep disorders across different demographics to support healthier living?</b></i></p>", unsafe_allow_html=True)
+summary.index = summary.index + 1
 
-dataset = pd.DataFrame({
-    "Variable Category": ['Demographics', 'Sleep Metrics', 'Health Inidcators', 'Lifestyle Factors'],
-    "Variables" : ['Person ID, Age, Gender, Occupation', 'Sleep Duration, Quality of Sleep (1-10), Sleep Disorder', 'BMI Category, Blood Pressure, Heart Rate (bpm)', 'Physical Activity (minutes/day), Stress Level (scale 1-10), Daily Steps']
-})
-dataset2 = pd.DataFrame({
-    "Variable": ['Person ID', 'Gender', 'Age', 'Occupation', 'Sleep Duration', 'Quality of Sleep (1-10)', 'Sleep Disorder', 'BMI Category', 'Heart Rate bpm', 'Physical Activity (minutes/day)', 'Stress level (scale1-10)', 'Daily Steps'],
-    "Data Type" : ['index', 'category', 'int16', 'category', 'float32', 'float64', 'category', 'category', 'int16', 'int16', 'int64', 'int16']
-})
-
-col3, col4 = st.columns([0.5, 0.5])
-with col3:
-    st.markdown('<center><h2>Dataset Overview</h2></center>', unsafe_allow_html=True)
-    st.table(dataset)
-with col4:
-    st.markdown('<center><h2>Variable Description</h2></center>', unsafe_allow_html=True)
-    st.table(dataset2)
-
-st.button('Go to Dashboard', use_container_width=True, on_click=go_dashboard)
+st.table(summary)
+st.markdown("[📓 View Full Analysis Notebook](https://github.com/ascxiao/Sleep-Health-and-Lifestyle-Dataset/blob/main/sleep.ipynb)")

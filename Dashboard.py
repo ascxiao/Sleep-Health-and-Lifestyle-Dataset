@@ -15,7 +15,7 @@ data = dataset
 
 st.markdown('<style>div.block-container</style>', unsafe_allow_html=True)
 
-st.markdown('<center><h1>Sleep Health and Lifestyle Analysis Dashboard</h1></center>', unsafe_allow_html=True)
+st.markdown('<center><h1>Sleep Health and Lifestyle Dashboard</h1></center>', unsafe_allow_html=True)
 
 col1, col2, col3= st.columns([0.15, 0.65, 0.20], border=True)
 
